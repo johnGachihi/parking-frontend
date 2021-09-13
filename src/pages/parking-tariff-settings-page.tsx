@@ -30,12 +30,17 @@ function ParkingTariffSettingsPage() {
     {
       timeRange: { lowerLimit: 11, upperLimit: 20 },
       fee: 20.0,
-      warnings: [],
+      warnings: [
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+        "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+      ],
     },
     {
       timeRange: { lowerLimit: 21, upperLimit: 30 },
       fee: 30.0,
-      warnings: ["a"],
+      warnings: [
+        "Ut labore et dolore magna aliqua"
+      ],
     },
   ])
 

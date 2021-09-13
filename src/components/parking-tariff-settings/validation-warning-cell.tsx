@@ -36,7 +36,17 @@ function ValidationWarningCell({ value: warnings }: Props) {
         }}
       >
         <List dense>
-          <ListItem>
+          {warnings.map(warning => (
+            <ListItem>
+              <ListItemIcon>
+                <ReportProblemOutlinedIcon color="error" />
+              </ListItemIcon>
+              <ListItemText>
+                {warning}
+              </ListItemText>
+            </ListItem>
+          ))}
+          {/*<ListItem>
             <ListItemIcon>
               <ReportProblemOutlinedIcon color="error" />
             </ListItemIcon>
@@ -53,7 +63,7 @@ function ValidationWarningCell({ value: warnings }: Props) {
           </ListItem>
           <ListItem>
             <ListItemText>Ble</ListItemText>
-          </ListItem>
+          </ListItem>*/}
         </List>
       </Popover>
       <IconButton color="primary" onClick={handleClick}>
