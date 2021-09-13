@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -12,8 +14,10 @@
     "@types/react-dom": "^17.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-query": "^3.23.2",
     "react-scripts": "4.0.3",
-    "typescript": "^4.1.2",
+    "react-table": "^7.7.0",
+    "typescript": "^4.4.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
@@ -25,7 +29,8 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "prettier"
     ]
   },
   "browserslist": {
@@ -39,5 +44,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-table": "^7.7.2",
+    "eslint-config-prettier": "^8.3.0",
+    "msw": "^0.35.0",
+    "prettier": "2.4.0"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
