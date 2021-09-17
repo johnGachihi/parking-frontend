@@ -1,5 +1,5 @@
 import TextField from "@material-ui/core/TextField"
-import React from "react"
+import React, {ChangeEvent} from "react"
 import styles from "./time-range-editting-cell.module.css"
 import { Row } from "react-table"
 import { Typography } from "@material-ui/core"
@@ -10,7 +10,10 @@ type Props = {
     lowerLimit: number
     upperLimit: number
   }
-  updateData: Function
+  updateData: (
+    rowIndex: number,
+    rowData: { fee?: number; upperLimit: number | null }
+  ) => void
 }
 
 function TimeRangeEditingCell({
@@ -18,19 +21,19 @@ function TimeRangeEditingCell({
   row: { index: rowIndex },
   updateData,
 }: Props) {
-  const handleUpperLimitChange = (e: any) => {
-    updateData(rowIndex, { upperLimit: e.target.value })
+  const handleUpperLimitChange = (e: ChangeEvent<HTMLInputElement>) => {
+    updateData(rowIndex, { upperLimit: parseInt(e.target.value) })
   }
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      <Typography variant="body1">{value.lowerLimit}</Typography>
+      <Typography variant="body1">{isNaN(value.lowerLimit) ? "—" : value.lowerLimit}</Typography>
       <span style={{ margin: "0 1em" }}>-</span>
       <TextField
         InputProps={{
           classes: { root: styles.input },
         }}
-        inputProps={{ type: "number" }}
+        inputProps={{ type: "number", min: 1 }}
         style={{
           fontSize: "14px",
           background: "transparent",

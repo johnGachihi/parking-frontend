@@ -24,7 +24,15 @@ function ParkingTariffSettingsPage() {
     { upperLimit: 30, fee: 30.0 },
   ])
 
-  const columns = useMemo(
+  const columns = useMemo<
+    {
+      id?: string
+      accessor?: Function | string
+      Cell?: any
+      Header?: string
+      width?: string
+    }[]
+  >(
     () => [
       {
         id: "warnings",
@@ -35,12 +43,26 @@ function ParkingTariffSettingsPage() {
           parentRows: any,
           data: TariffEntry[]
         ) => {
-          const lowerLimit = Number(data[idx - 1]?.upperLimit) ?? 0
-          if (lowerLimit >= data[idx].upperLimit) {
-            return ["The lower limit is equal to or higher than the upper limit"]
+          const warnings: string[] = []
+
+          const lowerLimit = data[idx - 1]?.upperLimit ?? 0
+          if (isNaN(row.upperLimit)) {
+            warnings.push("Empty or invalid upper limit value provided")
           }
 
-          return []
+          if (lowerLimit >= data[idx].upperLimit) {
+            warnings.push("The lower limit is equal to or higher than the upper limit")
+          }
+
+          if (!row.fee) {
+            warnings.push("A fee is required")
+          }
+
+          if (row.fee < 0) {
+            warnings.push("The fee may only be equal to or greater than zero")
+          }
+
+          return warnings
         },
         Header: "",
         Cell: ValidationWarningCell,
@@ -126,15 +148,9 @@ function ParkingTariffSettingsPage() {
                   <TableCell {...row.cells[2].getCellProps()}>
                     {row.cells[2].render("Cell")}
                   </TableCell>
-                  {/*{row.cells.map(cell => (
-                    <TableCell
-                      // width={cell.column.id !== "fee" ? "30%" : "unset"}
-                      align={cell.column.id !== "fee" ? "center" : "inherit"}
-                      {...cell.getCellProps()}
-                    >
-                      {cell.render("Cell")}
-                    </TableCell>
-                  ))}*/}
+                  <TableCell {...row.cells[3].getCellProps()}>
+                    {row.cells[3].render("Cell")}
+                  </TableCell>
                 </TableRow>
               )
             })}

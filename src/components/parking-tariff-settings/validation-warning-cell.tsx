@@ -48,7 +48,7 @@ function ValidationWarningCell({ value: warnings }: Props) {
         </List>
       </Popover>
 
-      <IconButton color="primary" onClick={handleClick}>
+      <IconButton color="primary" size="small" onClick={handleClick}>
         <Badge
           badgeContent={warnings.length}
           color="error"
