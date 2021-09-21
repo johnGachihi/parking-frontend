@@ -15,6 +15,11 @@ import FeeEditingCell from "../components/parking-tariff-settings/fee-editing-ce
 import ActionsCell from "../components/parking-tariff-settings/actions-cell"
 import Box from "@material-ui/core/Box"
 import Drawer from "@material-ui/core/Drawer"
+import Dialog from "@material-ui/core/Dialog"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogContentText from "@material-ui/core/DialogContentText"
+import { DialogActions } from "@material-ui/core"
 
 function ParkingTariffSettingsPage() {
   const [data, setData] = useState<TariffEntry[]>([
@@ -131,6 +136,11 @@ function ParkingTariffSettingsPage() {
     return rows.every(row => row.values.warnings.length === 0)
   }, [rows])
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const openDialog = () => setIsDialogOpen(true)
+  const handleDialogClose = () => setIsDialogOpen(false)
+  const closeDialog = handleDialogClose
+
   return (
     <div className={styles.root}>
       <Drawer
@@ -151,6 +161,22 @@ function ParkingTariffSettingsPage() {
           </Box>
         </div>
       </Drawer>
+
+      <Dialog open={isDialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Work In Progress</DialogTitle>
+
+        <DialogContent>
+          <DialogContentText>
+            The backend has not been deployed
+          </DialogContentText>
+        </DialogContent>
+
+        <DialogActions>
+          <Button color="primary" onClick={closeDialog}>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <div className={styles.main}>
         <TableContainer component={Paper}>
@@ -200,7 +226,12 @@ function ParkingTariffSettingsPage() {
         </TableContainer>
 
         <Box mt={2} ml="auto">
-          <Button disabled={!isDataValid} variant="contained" color="primary">
+          <Button
+            disabled={!isDataValid}
+            variant="contained"
+            color="primary"
+            onClick={openDialog}
+          >
             Save
           </Button>
         </Box>
