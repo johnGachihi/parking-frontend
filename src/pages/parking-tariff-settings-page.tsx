@@ -10,9 +10,10 @@ import { useMemo, useState } from "react"
 import TimeRangeEditingCell from "../components/parking-tariff-settings/time-range-editting-cell"
 import styles from "./parking-tariff-settings-page.module.css"
 import ValidationWarningCell from "../components/parking-tariff-settings/validation-warning-cell"
-import FeeEditingCell from "../components/parking-tariff-settings/fee-editing-cell";
+import FeeEditingCell from "../components/parking-tariff-settings/fee-editing-cell"
+import ActionsCell from "../components/parking-tariff-settings/actions-cell"
 
-type TariffEntry = {
+export type TariffEntry = {
   upperLimit: number
   fee: number
 }
@@ -51,10 +52,12 @@ function ParkingTariffSettingsPage() {
           }
 
           if (lowerLimit >= data[idx].upperLimit) {
-            warnings.push("The lower limit is equal to or higher than the upper limit")
+            warnings.push(
+              "The lower limit is equal to or higher than the upper limit"
+            )
           }
 
-          if (!row.fee) {
+          if (isNaN(row.fee)) {
             warnings.push("A fee is required")
           }
 
@@ -88,7 +91,11 @@ function ParkingTariffSettingsPage() {
       {
         Header: "Fee",
         accessor: "fee",
-        Cell: FeeEditingCell
+        Cell: FeeEditingCell,
+      },
+      {
+        id: "actions",
+        Cell: ActionsCell,
       },
     ],
     []
@@ -106,9 +113,21 @@ function ParkingTariffSettingsPage() {
     )
   }
 
+  const addRow = (rowIndex: number, newRowData: TariffEntry) => {
+    setData(old => [
+      ...old.slice(0, rowIndex),
+      newRowData,
+      ...old.slice(rowIndex),
+    ])
+  }
+
+  const removeRow = (rowIndex: number) => {
+    setData(old => [...old.slice(0, rowIndex), ...old.slice(rowIndex + 1)])
+  }
+
   const { getTableProps, headerGroups, getTableBodyProps, rows, prepareRow } =
     // @ts-ignore
-    useTable({ columns, data, updateData })
+    useTable({ columns, data, updateData, addRow, removeRow })
 
   return (
     <div className={styles.main}>

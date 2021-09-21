@@ -23,7 +23,7 @@ function FeeEditingCell({
         width: "80px",
         minWidth: "40px",
       }}
-      inputProps={{ type: "number", min: 1 }}
+      inputProps={{ type: "number", min: 0 }}
       value={value}
       onChange={handleChange}
     />
