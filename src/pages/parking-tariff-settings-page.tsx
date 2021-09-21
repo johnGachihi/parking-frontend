@@ -4,7 +4,8 @@ import TableHead from "@material-ui/core/TableHead"
 import MuiTable from "@material-ui/core/Table"
 import Paper from "@material-ui/core/Paper"
 import TableRow from "@material-ui/core/TableRow"
-import { TableCell } from "@material-ui/core"
+import TableCell from "@material-ui/core/TableCell"
+import Button from "@material-ui/core/Button"
 import TableBody from "@material-ui/core/TableBody"
 import { useMemo, useState } from "react"
 import TimeRangeEditingCell from "../components/parking-tariff-settings/time-range-editting-cell"
@@ -12,6 +13,7 @@ import styles from "./parking-tariff-settings-page.module.css"
 import ValidationWarningCell from "../components/parking-tariff-settings/validation-warning-cell"
 import FeeEditingCell from "../components/parking-tariff-settings/fee-editing-cell"
 import ActionsCell from "../components/parking-tariff-settings/actions-cell"
+import Box from "@material-ui/core/Box"
 
 export type TariffEntry = {
   upperLimit: number
@@ -129,6 +131,10 @@ function ParkingTariffSettingsPage() {
     // @ts-ignore
     useTable({ columns, data, updateData, addRow, removeRow })
 
+  const isDataValid = useMemo<Boolean>(() => {
+    return rows.every(row => row.values.warnings.length === 0)
+  }, [rows])
+
   return (
     <div className={styles.main}>
       <TableContainer component={Paper}>
@@ -176,6 +182,12 @@ function ParkingTariffSettingsPage() {
           </TableBody>
         </MuiTable>
       </TableContainer>
+
+      <Box mt={2} ml="auto">
+        <Button disabled={!isDataValid} variant="contained" color="primary">
+          Save
+        </Button>
+      </Box>
     </div>
   )
 }
