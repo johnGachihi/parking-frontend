@@ -14,11 +14,7 @@ import ValidationWarningCell from "../components/parking-tariff-settings/validat
 import FeeEditingCell from "../components/parking-tariff-settings/fee-editing-cell"
 import ActionsCell from "../components/parking-tariff-settings/actions-cell"
 import Box from "@material-ui/core/Box"
-
-export type TariffEntry = {
-  upperLimit: number
-  fee: number
-}
+import Drawer from "@material-ui/core/Drawer"
 
 function ParkingTariffSettingsPage() {
   const [data, setData] = useState<TariffEntry[]>([
@@ -136,60 +132,86 @@ function ParkingTariffSettingsPage() {
   }, [rows])
 
   return (
-    <div className={styles.main}>
-      <TableContainer component={Paper}>
-        <MuiTable {...getTableProps()}>
-          <TableHead>
-            {headerGroups.map(headerGroup => (
-              <TableRow {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
-                  <TableCell {...column.getHeaderProps()}>
-                    {column.render("Header")}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableHead>
+    <div className={styles.root}>
+      <Drawer
+        variant="permanent"
+        anchor="left"
+        style={{
+          width: "240px",
+          flexShrink: 0,
+        }}
+        classes={{ paper: styles.drawerPaper }}
+      >
+        <div className={styles.drawerContent}>
+          <div className={styles.textPlaceholder}></div>
+          <div className={styles.textPlaceholder}></div>
 
-          <TableBody {...getTableBodyProps}>
-            {rows.map(row => {
-              prepareRow(row)
-              return (
-                <TableRow {...row.getRowProps()}>
-                  <TableCell
-                    {...row.cells[0].getCellProps()}
-                    width={row.cells[0].column.width}
-                    align="center"
-                  >
-                    {row.cells[0].render("Cell")}
-                  </TableCell>
-                  <TableCell
-                    {...row.cells[1].getCellProps()}
-                    width="30%"
-                    align="center"
-                  >
-                    {row.cells[1].render("Cell")}
-                  </TableCell>
-                  <TableCell {...row.cells[2].getCellProps()}>
-                    {row.cells[2].render("Cell")}
-                  </TableCell>
-                  <TableCell {...row.cells[3].getCellProps()}>
-                    {row.cells[3].render("Cell")}
-                  </TableCell>
+          <Box mt="auto">
+            <div className={styles.textPlaceholder}></div>
+          </Box>
+        </div>
+      </Drawer>
+
+      <div className={styles.main}>
+        <TableContainer component={Paper}>
+          <MuiTable {...getTableProps()}>
+            <TableHead>
+              {headerGroups.map(headerGroup => (
+                <TableRow {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map(column => (
+                    <TableCell {...column.getHeaderProps()}>
+                      {column.render("Header")}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )
-            })}
-          </TableBody>
-        </MuiTable>
-      </TableContainer>
+              ))}
+            </TableHead>
 
-      <Box mt={2} ml="auto">
-        <Button disabled={!isDataValid} variant="contained" color="primary">
-          Save
-        </Button>
-      </Box>
+            <TableBody {...getTableBodyProps}>
+              {rows.map(row => {
+                prepareRow(row)
+                return (
+                  <TableRow {...row.getRowProps()}>
+                    <TableCell
+                      {...row.cells[0].getCellProps()}
+                      width={row.cells[0].column.width}
+                      align="center"
+                    >
+                      {row.cells[0].render("Cell")}
+                    </TableCell>
+                    <TableCell
+                      {...row.cells[1].getCellProps()}
+                      width="30%"
+                      align="center"
+                    >
+                      {row.cells[1].render("Cell")}
+                    </TableCell>
+                    <TableCell {...row.cells[2].getCellProps()}>
+                      {row.cells[2].render("Cell")}
+                    </TableCell>
+                    <TableCell {...row.cells[3].getCellProps()}>
+                      {row.cells[3].render("Cell")}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </MuiTable>
+        </TableContainer>
+
+        <Box mt={2} ml="auto">
+          <Button disabled={!isDataValid} variant="contained" color="primary">
+            Save
+          </Button>
+        </Box>
+      </div>
     </div>
   )
+}
+
+export type TariffEntry = {
+  upperLimit: number
+  fee: number
 }
 
 export default ParkingTariffSettingsPage
