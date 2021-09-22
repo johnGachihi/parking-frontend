@@ -1,25 +1,25 @@
 import { useTable } from "react-table"
-import TableContainer from "@material-ui/core/TableContainer"
-import TableHead from "@material-ui/core/TableHead"
-import MuiTable from "@material-ui/core/Table"
-import Paper from "@material-ui/core/Paper"
-import TableRow from "@material-ui/core/TableRow"
-import TableCell from "@material-ui/core/TableCell"
-import Button from "@material-ui/core/Button"
-import TableBody from "@material-ui/core/TableBody"
+import TableContainer from "@mui/material/TableContainer"
+import TableHead from "@mui/material/TableHead"
+import MuiTable from "@mui/material/Table"
+import Paper from "@mui/material/Paper"
+import TableRow from "@mui/material/TableRow"
+import TableCell from "@mui/material/TableCell"
+import Button from "@mui/material/Button"
+import TableBody from "@mui/material/TableBody"
 import { useMemo, useState } from "react"
 import TimeRangeEditingCell from "../components/parking-tariff-settings/time-range-editting-cell"
 import styles from "./parking-tariff-settings-page.module.css"
 import ValidationWarningCell from "../components/parking-tariff-settings/validation-warning-cell"
 import FeeEditingCell from "../components/parking-tariff-settings/fee-editing-cell"
 import ActionsCell from "../components/parking-tariff-settings/actions-cell"
-import Box from "@material-ui/core/Box"
-import Drawer from "@material-ui/core/Drawer"
-import Dialog from "@material-ui/core/Dialog"
-import DialogTitle from "@material-ui/core/DialogTitle"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogContentText from "@material-ui/core/DialogContentText"
-import { DialogActions } from "@material-ui/core"
+import Box from "@mui/material/Box"
+import Drawer from "@mui/material/Drawer"
+import Dialog from "@mui/material/Dialog"
+import DialogTitle from "@mui/material/DialogTitle"
+import DialogContent from "@mui/material/DialogContent"
+import DialogContentText from "@mui/material/DialogContentText"
+import { DialogActions } from "@mui/material"
 
 function ParkingTariffSettingsPage() {
   const [data, setData] = useState<TariffEntry[]>([
@@ -146,8 +146,8 @@ function ParkingTariffSettingsPage() {
       <Drawer
         variant="permanent"
         anchor="left"
-        style={{
-          width: "240px",
+        sx={{
+          width: 240,
           flexShrink: 0,
         }}
         classes={{ paper: styles.drawerPaper }}

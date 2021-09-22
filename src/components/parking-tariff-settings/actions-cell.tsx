@@ -1,8 +1,8 @@
-import MoreVertIcon from "@material-ui/icons/MoreVert"
-import IconButton from "@material-ui/core/IconButton"
+import MoreVertIcon from "@mui/icons-material/MoreVert"
+import IconButton from "@mui/material/IconButton"
 import React, { useState } from "react"
-import Menu from "@material-ui/core/Menu"
-import MenuItem from "@material-ui/core/MenuItem"
+import Menu from "@mui/material/Menu"
+import MenuItem from "@mui/material/MenuItem"
 import { Row } from "react-table"
 import { TariffEntry } from "../../pages/parking-tariff-settings-page"
 

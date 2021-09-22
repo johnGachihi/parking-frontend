@@ -3,9 +3,9 @@ import ReactDOM from "react-dom"
 import "./index.css"
 import App from "./App"
 import reportWebVitals from "./reportWebVitals"
-import ThemeProvider from "@material-ui/styles/ThemeProvider"
+import ThemeProvider from "@mui/material/styles/ThemeProvider"
 import theme from "./styles/theme"
-import CssBaseline from "@material-ui/core/CssBaseline"
+import CssBaseline from "@mui/material/CssBaseline"
 import { QueryClientProvider, QueryClient } from "react-query"
 
 if (process.env.NODE_ENV === "development") {

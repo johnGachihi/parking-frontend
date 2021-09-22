@@ -1,5 +1,5 @@
 import { Row } from "react-table"
-import TextField from "@material-ui/core/TextField"
+import TextField from "@mui/material/TextField"
 import { ChangeEvent } from "react"
 
 type Props = {
@@ -19,10 +19,11 @@ function FeeEditingCell({
 
   return (
     <TextField
-      style={{
-        width: "80px",
-        minWidth: "40px",
+      sx={{
+        width: 80,
+        minWidth: 40
       }}
+      variant="standard"
       inputProps={{ type: "number", min: 0 }}
       value={value}
       onChange={handleChange}
