@@ -4,11 +4,11 @@ import React, { useState } from "react"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
 import { Row } from "react-table"
-import { TariffEntry } from "../../pages/parking-tariff-settings-page"
+import { ParkingRatesEntry } from "../../pages/parking-tariff-settings-page"
 
 type Props = {
-  row: Row<TariffEntry>
-  addRow: Function
+  row: Row<ParkingRatesEntry>
+  addRow: (rowIndex: number, entry: ParkingRatesEntry) => void
   removeRow: Function
 }
 
@@ -26,16 +26,20 @@ function ActionsCell({ row, addRow, removeRow: _removeRow }: Props) {
 
   const addRowAbove = () => {
     closeMenu()
+
+    const currentRowLowerLimit = row.values.timeRange.lowerLimit
     addRow(row.index, {
-      upperLimit: row.values.timeRange.lowerLimit + 1,
+      upperLimit: currentRowLowerLimit.addMinutes(1),
       fee: 0,
     })
   }
 
   const addRowBelow = () => {
     closeMenu()
+
+    const currentRowUpperLimit = row.values.timeRange.upperLimit
     addRow(row.index + 1, {
-      upperLimit: row.values.timeRange.upperLimit + 1,
+      upperLimit: currentRowUpperLimit.addMinutes(1),
       fee: 0,
     })
   }

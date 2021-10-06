@@ -7,6 +7,7 @@ import ThemeProvider from "@mui/material/styles/ThemeProvider"
 import theme from "./styles/theme"
 import CssBaseline from "@mui/material/CssBaseline"
 import { QueryClientProvider, QueryClient } from "react-query"
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 if (process.env.NODE_ENV === "development") {
   const { worker } = require("./mocks/msw/browser")
@@ -20,6 +21,7 @@ ReactDOM.render(
         <CssBaseline />
         <App />
       </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root")
