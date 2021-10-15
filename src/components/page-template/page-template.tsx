@@ -9,7 +9,7 @@ function PageTemplate({ children, title }: Props) {
   return (
     <Box sx={{ display: "flex" }}>
       <Drawer />
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 3, width: 1 }}>
         {title && (
           <Box sx={{ mb: 2 }}>
             <Typography variant="h5">{title}</Typography>

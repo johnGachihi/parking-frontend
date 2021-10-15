@@ -7,7 +7,8 @@ import ThemeProvider from "@mui/material/styles/ThemeProvider"
 import theme from "./styles/theme"
 import CssBaseline from "@mui/material/CssBaseline"
 import { QueryClientProvider, QueryClient } from "react-query"
-import { ReactQueryDevtools } from 'react-query/devtools'
+import { ReactQueryDevtools } from "react-query/devtools"
+import { BrowserRouter as Router } from "react-router-dom"
 
 if (process.env.NODE_ENV === "development") {
   const { worker } = require("./mocks/msw/browser")
@@ -16,13 +17,15 @@ if (process.env.NODE_ENV === "development") {
 
 ReactDOM.render(
   <React.StrictMode>
-    <QueryClientProvider client={new QueryClient()}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <App />
-      </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <Router>
+      <QueryClientProvider client={new QueryClient()}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 )
