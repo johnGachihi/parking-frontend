@@ -1,5 +1,5 @@
 import TextField from "@mui/material/TextField"
-import React, {ChangeEvent, useEffect, useState} from "react"
+import React, { ChangeEvent, useEffect, useState } from "react"
 import { Row } from "react-table"
 import { Typography } from "@mui/material"
 import Duration from "../../utils/Duration"
@@ -22,11 +22,11 @@ function TimeRangeEditingCell({
   updateData,
 }: Props) {
   const [upperLimit, setUpperLimit] = useState<string>(
-    value.upperLimit?.getMinutes().toString() ?? ""
+    value.upperLimit?.asMinutes().toString() ?? ""
   )
 
   useEffect(() => {
-    setUpperLimit(value.upperLimit?.getMinutes().toString() ?? "")
+    setUpperLimit(value.upperLimit?.asMinutes().toString() ?? "")
   }, [value])
 
   const handleUpperLimitChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -39,13 +39,12 @@ function TimeRangeEditingCell({
     } else {
       updateData(rowIndex, { upperLimit: null })
     }
-
   }
 
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       <Typography variant="body1">
-        {value.lowerLimit ? value.lowerLimit.getMinutes() : "—"}
+        {value.lowerLimit ? value.lowerLimit.asMinutes() : "—"}
       </Typography>
       <span style={{ margin: "0 1em" }}>-</span>
       <TextField

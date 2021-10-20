@@ -2,7 +2,7 @@ import Duration from "./Duration"
 
 test("getMinutes() returns correct minutes", () => {
   const duration = new Duration("PT1M")
-  expect(duration.getMinutes()).toBe(1)
+  expect(duration.asMinutes()).toBe(1)
 })
 
 test("when ISO_8086 duration provided is invalid, then throws Error", () => {
@@ -12,15 +12,13 @@ test("when ISO_8086 duration provided is invalid, then throws Error", () => {
 })
 
 test("create duration using ofMinutes", () => {
-  expect(Duration.ofMinutes(10).getMinutes())
-    .toBe(10)
+  expect(Duration.ofMinutes(10).asMinutes()).toBe(10)
 })
 
 test("addMinutes() adds minutes", () => {
   const duration = Duration.ofMinutes(10)
 
-  expect(duration.addMinutes(1).getMinutes())
-    .toBe(11)
+  expect(duration.addMinutes(1).asMinutes()).toBe(11)
 })
 
 test("addMinutes() returns new instance", () => {
@@ -35,10 +33,20 @@ test("clone() creates new instance with the same duration value", () => {
   const clonedDuration = duration.clone()
 
   expect(clonedDuration).not.toBe(duration)
-  expect(clonedDuration.getMinutes()).toBe(duration.getMinutes())
+  expect(clonedDuration.asMinutes()).toBe(duration.asMinutes())
 })
 
 test("toISOString()", () => {
   const duration = Duration.ofMinutes(10)
   expect(duration.toISOString()).toBe("PT10M")
+})
+
+test("hours()", () => {
+  const duration = new Duration("PT10H30M")
+  expect(duration.hours()).toBe(10)
+})
+
+test("minutes()", () => {
+  const duration = new Duration("PT10H30M")
+  expect(duration.minutes()).toBe(30)
 })

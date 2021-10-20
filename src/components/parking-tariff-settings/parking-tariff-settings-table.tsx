@@ -140,7 +140,7 @@ const warningsAccessor = (
     warnings.push("Empty or invalid upper limit value provided")
   } else if (
     lowerLimit &&
-    lowerLimit.getMinutes() >= row.upperLimit.getMinutes()
+    lowerLimit.asMinutes() >= row.upperLimit.asMinutes()
   ) {
     warnings.push("The lower limit is equal to or higher than the upper limit")
   }
