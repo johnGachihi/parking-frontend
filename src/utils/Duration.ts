@@ -1,5 +1,7 @@
 import dayjs from "dayjs"
-import dayjsDuration, {Duration as dayjsDurationType} from "dayjs/plugin/duration"
+import dayjsDuration, {
+  Duration as dayjsDurationType,
+} from "dayjs/plugin/duration"
 
 dayjs.extend(dayjsDuration)
 
@@ -29,12 +31,14 @@ class Duration {
   }
 
   // TODO: Rename to asMinutes
-  getMinutes() {
+  asMinutes() {
     return this.dayjsDuration.asMinutes()
   }
 
   addMinutes(minutes: number) {
-    return new Duration(this.dayjsDuration.add(minutes, "minutes").toISOString())
+    return new Duration(
+      this.dayjsDuration.add(minutes, "minutes").toISOString()
+    )
   }
 
   clone() {
@@ -43,6 +47,14 @@ class Duration {
 
   toISOString() {
     return this.dayjsDuration.toISOString()
+  }
+
+  hours() {
+    return this.dayjsDuration.hours()
+  }
+
+  minutes() {
+    return this.dayjsDuration.minutes()
   }
 }
 
