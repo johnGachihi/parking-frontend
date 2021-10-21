@@ -4,26 +4,51 @@ import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
 import Divider from "@mui/material/Divider"
 import Typography from "@mui/material/Typography"
+import Snackbar from "@mui/material/Snackbar"
+import Alert from "@mui/material/Alert"
 import useStartPayment from "../network/start-payment"
+import useCompletePayment from "../network/complete-payment"
 import { useEffect, useMemo, useState } from "react"
 import {
   ErrorResponse,
   ValidationErrorResponse,
 } from "../network/error-response"
 import LoadingButton from "../components/payment-page/loading-button"
+import UnexpectedErrorDialog from "../components/payment-page/unexpected-error-dialog"
 
 function CashierPage() {
   const [ticketCodeInput, setTicketCodeInput] = useState<string>("")
   const [paymentSessionInProgress, setPaymentSessionInProgress] =
     useState(false)
-  // TODO: collapse to startPayment|paymentStarter or the like
-  const { mutate, isSuccess, data, isLoading, isError, error } =
-    useStartPayment()
-  const ticketCodeInputErrorMessage = useTicketCodeInputError(isError, error)
+  const startPaymentQuery = useStartPayment()
+  const ticketCodeInputErrorMessage = useTicketCodeInputError(
+    startPaymentQuery.isError,
+    startPaymentQuery.error
+  )
+  const completePaymentQuery = useCompletePayment()
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
+  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false)
+  const handleCloseErrorDialog = () => setIsErrorDialogOpen(false)
 
   useEffect(() => {
-    if (isSuccess) setPaymentSessionInProgress(true)
-  }, [isSuccess])
+    if (startPaymentQuery.isSuccess) {
+      setPaymentSessionInProgress(true)
+    }
+  }, [startPaymentQuery.isSuccess])
+
+  useEffect(() => {
+    if (completePaymentQuery.isSuccess) {
+      setPaymentSessionInProgress(false)
+      setTicketCodeInput("")
+      setIsSnackbarOpen(true)
+    }
+  }, [completePaymentQuery.isSuccess])
+
+  useEffect(() => {
+    if (completePaymentQuery.isError) {
+      setIsErrorDialogOpen(true)
+    }
+  }, [completePaymentQuery.isError])
 
   return (
     <PageTemplate title="Cashier">
@@ -45,7 +70,7 @@ function CashierPage() {
               sx={{ mb: 1 }}
               value={ticketCodeInput}
               onChange={e => setTicketCodeInput(e.target.value)}
-              error={isError}
+              error={startPaymentQuery.isError}
               helperText={ticketCodeInputErrorMessage}
               disabled={paymentSessionInProgress}
             />
@@ -53,9 +78,9 @@ function CashierPage() {
             <LoadingButton
               variant="contained"
               sx={{ width: "fit-content" }}
-              onClick={() => mutate(ticketCodeInput)}
+              onClick={() => startPaymentQuery.mutate(ticketCodeInput)}
               disabled={paymentSessionInProgress}
-              loading={isLoading}
+              loading={startPaymentQuery.isLoading}
             >
               Start Payment
             </LoadingButton>
@@ -88,8 +113,8 @@ function CashierPage() {
               <Typography variant="body1">Time spent:</Typography>
               <Typography variant="h5" color="secondary">
                 {/*5 hrs 32 min*/}
-                {data && paymentSessionInProgress
-                  ? `${data.visitTimeOfStay.hours()} hrs ${data.visitTimeOfStay.minutes()} min`
+                {startPaymentQuery.data && paymentSessionInProgress
+                  ? `${startPaymentQuery.data.visitTimeOfStay.hours()} hrs ${startPaymentQuery.data.visitTimeOfStay.minutes()} min`
                   : "--"}
               </Typography>
             </div>
@@ -100,23 +125,32 @@ function CashierPage() {
           <Box sx={{ ml: 10 }}>
             <Typography variant="body1">Fee:</Typography>
             <Typography variant="h3" component="span" color="secondary">
-              {data && paymentSessionInProgress
-                ? `Ksh ${data.paymentSession.paymentAmount}`
+              {startPaymentQuery.data && paymentSessionInProgress
+                ? `Ksh ${startPaymentQuery.data.paymentSession.paymentAmount}`
                 : "--"}
             </Typography>
 
             <Box sx={{ mt: 5, display: "flex" }}>
-              <Button
+              <LoadingButton
                 variant="contained"
                 sx={{ mr: 4 }}
                 disabled={!paymentSessionInProgress}
-                onClick={() => setPaymentSessionInProgress(false)}
+                onClick={() => {
+                  if (startPaymentQuery.isSuccess && startPaymentQuery.data) {
+                    completePaymentQuery.mutate(
+                      startPaymentQuery.data.paymentSession.id
+                    )
+                  }
+                }}
+                loading={completePaymentQuery.isLoading}
               >
                 Complete Payment
-              </Button>
+              </LoadingButton>
               <Button
                 variant="outlined"
-                disabled={!paymentSessionInProgress}
+                disabled={
+                  !paymentSessionInProgress || completePaymentQuery.isLoading
+                }
                 onClick={() => setPaymentSessionInProgress(false)}
               >
                 Cancel Payment
@@ -125,6 +159,31 @@ function CashierPage() {
           </Box>
         </Box>
       </Box>
+
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        open={isSnackbarOpen}
+        onClose={() => {
+          setIsSnackbarOpen(false)
+        }}
+      >
+        <Alert
+          severity="success"
+          sx={{ width: 1 }}
+          variant="filled"
+          onClose={() => setIsSnackbarOpen(false)}
+        >
+          Payment completed successfully
+        </Alert>
+      </Snackbar>
+
+      <UnexpectedErrorDialog
+        open={isErrorDialogOpen}
+        onClose={handleCloseErrorDialog}
+        close={handleCloseErrorDialog}
+        error={completePaymentQuery.error}
+      />
+
     </PageTemplate>
   )
 }
