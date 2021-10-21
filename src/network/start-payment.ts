@@ -1,11 +1,11 @@
 import client from "./client"
 import { useMutation } from "react-query"
-import { ErrorResponse, ValidationErrorResponse } from "./error-response"
+import { ErrorResponse } from "./error-response"
 import axios, { AxiosError } from "axios"
 import Duration from "../utils/Duration"
 
 type UnprocessedPaymentSession = {
-  paymentSessionId: number
+  id: number
   paymentAmount: number
   paymentSessionExpiryTime: string
 }
@@ -30,15 +30,6 @@ async function makeStartPaymentRequest(ticketCode: string) {
 function handleAxiosError(e: AxiosError<any>) {
   if (e.response?.data) {
     const errorData = e.response.data
-    if (errorData?.type === "validation-error") {
-      throw new ValidationErrorResponse<{ ticketCode: string[] }>(
-        errorData.title,
-        errorData.status,
-        errorData.detail,
-        errorData.violations
-      )
-    }
-
     if (
       errorData?.type === "illegal-payment-attempt" ||
       errorData?.type === "invalid-ticket-code"
