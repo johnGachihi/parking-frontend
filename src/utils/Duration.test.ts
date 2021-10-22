@@ -50,3 +50,8 @@ test("minutes()", () => {
   const duration = new Duration("PT10H30M")
   expect(duration.minutes()).toBe(30)
 })
+
+test("format()", () => {
+  const duration = new Duration("PT10H30M")
+  expect(duration.format("H m")).toBe("10 30")
+})

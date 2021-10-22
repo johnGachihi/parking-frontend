@@ -114,7 +114,7 @@ function CashierPage() {
               <Typography variant="h5" color="secondary">
                 {/*5 hrs 32 min*/}
                 {startPaymentQuery.data && paymentSessionInProgress
-                  ? `${startPaymentQuery.data.visitTimeOfStay.hours()} hrs ${startPaymentQuery.data.visitTimeOfStay.minutes()} min`
+                  ? startPaymentQuery.data.visitTimeOfStay.format("H [hrs] m [min]")
                   : "--"}
               </Typography>
             </div>

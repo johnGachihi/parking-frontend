@@ -56,6 +56,10 @@ class Duration {
   minutes() {
     return this.dayjsDuration.minutes()
   }
+
+  format(f: string) {
+    return this.dayjsDuration.format(f)
+  }
 }
 
 export default Duration
