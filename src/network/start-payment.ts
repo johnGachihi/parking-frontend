@@ -3,11 +3,13 @@ import { useMutation } from "react-query"
 import { ErrorResponse } from "./error-response"
 import axios, { AxiosError } from "axios"
 import Duration from "../utils/Duration"
+import DateTime from "../utils/DateTime"
+import { useMemo } from "react"
 
 type UnprocessedPaymentSession = {
   id: number
   paymentAmount: number
-  paymentSessionExpiryTime: string
+  expiryTime: string
 }
 
 type UnprocessedStartPaymentResult = {
@@ -15,8 +17,14 @@ type UnprocessedStartPaymentResult = {
   visitTimeOfStay: string
 }
 
+type PaymentSession = {
+  id: number
+  paymentAmount: number
+  expiryTime: DateTime
+}
+
 type StartPaymentResult = {
-  paymentSession: UnprocessedPaymentSession
+  paymentSession: PaymentSession
   visitTimeOfStay: Duration
 }
 
@@ -63,14 +71,32 @@ function useStartPayment() {
     string
   >(ticketCode => startPayment(ticketCode))
 
-  const processedData: StartPaymentResult | undefined = result.data
-    ? {
-        ...result.data,
-        visitTimeOfStay: new Duration(result.data.visitTimeOfStay),
-      }
-    : undefined
+  const processedData: StartPaymentResult | undefined = useMemo(
+    () => (result.data ? processStartPaymentResult(result.data) : undefined),
+    [result.data]
+  )
 
   return { ...result, data: processedData }
+}
+
+function processStartPaymentResult(
+  unprocessedResult: UnprocessedStartPaymentResult
+): StartPaymentResult {
+  const processedExpiryTime = DateTime.fromISOString(
+    unprocessedResult.paymentSession.expiryTime
+  )
+  const processedVisitTimeOfStay = Duration.fromISO_8601String(
+    unprocessedResult.visitTimeOfStay
+  )
+
+  return {
+    ...unprocessedResult,
+    paymentSession: {
+      ...unprocessedResult.paymentSession,
+      expiryTime: processedExpiryTime,
+    },
+    visitTimeOfStay: processedVisitTimeOfStay,
+  }
 }
 
 export default useStartPayment

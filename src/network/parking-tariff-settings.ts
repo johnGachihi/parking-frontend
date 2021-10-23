@@ -20,7 +20,7 @@ function transformFetchedParkingRates(
 ): ParkingRatesEntry[] {
   return fetchedParkingRates.map(entry => ({
     ...entry,
-    upperLimit: new Duration(entry.upperLimit),
+    upperLimit: Duration.fromISO_8601String(entry.upperLimit),
   }))
 }
 

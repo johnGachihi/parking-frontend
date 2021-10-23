@@ -15,20 +15,36 @@ import {
 } from "../network/error-response"
 import LoadingButton from "../components/payment-page/loading-button"
 import UnexpectedErrorDialog from "../components/payment-page/unexpected-error-dialog"
+import { useTimeUntilPaymentSessionExpiry } from "../components/payment-page/use-time-until-payment-session-expiry"
+import PaymentSessionExpiredDialog from "../components/payment-page/payment-session-expired-dialog"
 
 function CashierPage() {
   const [ticketCodeInput, setTicketCodeInput] = useState<string>("")
   const [paymentSessionInProgress, setPaymentSessionInProgress] =
     useState(false)
   const startPaymentQuery = useStartPayment()
+  const startPayment = () => startPaymentQuery.mutate(ticketCodeInput)
+
   const ticketCodeInputErrorMessage = useTicketCodeInputError(
     startPaymentQuery.isError,
     startPaymentQuery.error
   )
   const completePaymentQuery = useCompletePayment()
+
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false)
   const handleCloseErrorDialog = () => setIsErrorDialogOpen(false)
+
+  const timeUntilPaymentSessionExpiry = useTimeUntilPaymentSessionExpiry(
+    startPaymentQuery.data?.paymentSession.expiryTime,
+    paymentSessionInProgress,
+    5
+  )
+
+  const [
+    isPaymentSessionExpiryDialogOpen,
+    setIsPaymentSessionExpiryDialogOpen,
+  ] = useState(false)
 
   useEffect(() => {
     if (startPaymentQuery.isSuccess) {
@@ -49,6 +65,20 @@ function CashierPage() {
       setIsErrorDialogOpen(true)
     }
   }, [completePaymentQuery.isError])
+
+  const isPaymentSessionExpired = useMemo(() => {
+    return !!(
+      timeUntilPaymentSessionExpiry &&
+      timeUntilPaymentSessionExpiry.asSeconds() <= 0
+    )
+  }, [timeUntilPaymentSessionExpiry])
+
+  useEffect(() => {
+    if (isPaymentSessionExpired) {
+      setPaymentSessionInProgress(false)
+      setIsPaymentSessionExpiryDialogOpen(true)
+    }
+  }, [isPaymentSessionExpired])
 
   return (
     <PageTemplate title="Cashier">
@@ -78,7 +108,7 @@ function CashierPage() {
             <LoadingButton
               variant="contained"
               sx={{ width: "fit-content" }}
-              onClick={() => startPaymentQuery.mutate(ticketCodeInput)}
+              onClick={startPayment}
               disabled={paymentSessionInProgress}
               loading={startPaymentQuery.isLoading}
             >
@@ -114,7 +144,9 @@ function CashierPage() {
               <Typography variant="h5" color="secondary">
                 {/*5 hrs 32 min*/}
                 {startPaymentQuery.data && paymentSessionInProgress
-                  ? startPaymentQuery.data.visitTimeOfStay.format("H [hrs] m [min]")
+                  ? startPaymentQuery.data.visitTimeOfStay.format(
+                      "H [hrs] m [min]"
+                    )
                   : "--"}
               </Typography>
             </div>
@@ -156,6 +188,12 @@ function CashierPage() {
                 Cancel Payment
               </Button>
             </Box>
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              Time left until payment session expires:{" "}
+              {timeUntilPaymentSessionExpiry && paymentSessionInProgress
+                ? timeUntilPaymentSessionExpiry.format("m [min] s [sec]")
+                : "-- min -- sec"}
+            </Typography>
           </Box>
         </Box>
       </Box>
@@ -184,6 +222,14 @@ function CashierPage() {
         error={completePaymentQuery.error}
       />
 
+      <PaymentSessionExpiredDialog
+        open={isPaymentSessionExpiryDialogOpen}
+        onClose={() => setIsPaymentSessionExpiryDialogOpen(false)}
+        startNewSession={async () => {
+          await startPayment()
+          setIsPaymentSessionExpiryDialogOpen(false)
+        }}
+      />
     </PageTemplate>
   )
 }
