@@ -1,14 +1,29 @@
 import Duration from "./Duration"
 
-test("getMinutes() returns correct minutes", () => {
-  const duration = new Duration("PT1M")
+test("asSeconds()", () => {
+  const duration = Duration.fromISO_8601String("PT1M")
+  expect(duration.asSeconds()).toBe(60)
+})
+
+test("asMinutes() returns correct minutes", () => {
+  const duration = Duration.fromISO_8601String("PT1M")
   expect(duration.asMinutes()).toBe(1)
 })
 
 test("when ISO_8086 duration provided is invalid, then throws Error", () => {
-  expect(() => new Duration("1")).toThrow(
+  expect(() => Duration.fromISO_8601String("1")).toThrow(
     "Invalid ISO 8061 duration string provided"
   )
+})
+
+test("create duration using fromISO_8601String", () => {
+  const duration = Duration.fromISO_8601String("PT30M")
+  expect(duration.asMinutes()).toBe(30)
+})
+
+test("create duration using ofMilliseconds", () => {
+  const duration = Duration.ofMilliseconds(30*60*1000)
+  expect(duration.asMinutes()).toBe(30)
 })
 
 test("create duration using ofMinutes", () => {
@@ -42,16 +57,16 @@ test("toISOString()", () => {
 })
 
 test("hours()", () => {
-  const duration = new Duration("PT10H30M")
+  const duration = Duration.fromISO_8601String("PT10H30M")
   expect(duration.hours()).toBe(10)
 })
 
 test("minutes()", () => {
-  const duration = new Duration("PT10H30M")
+  const duration = Duration.fromISO_8601String("PT10H30M")
   expect(duration.minutes()).toBe(30)
 })
 
 test("format()", () => {
-  const duration = new Duration("PT10H30M")
+  const duration = Duration.fromISO_8601String("PT10H30M")
   expect(duration.format("H m")).toBe("10 30")
 })
