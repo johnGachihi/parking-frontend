@@ -12,9 +12,15 @@ type UnprocessedPaymentSession = {
   expiryTime: string
 }
 
+type UnprocessedVisit = {
+  timeOfStay: string
+  entryTime: string
+  latestPaymentTime: string | null
+}
+
 type UnprocessedStartPaymentResult = {
   paymentSession: UnprocessedPaymentSession
-  visitTimeOfStay: string
+  visit: UnprocessedVisit
 }
 
 type PaymentSession = {
@@ -23,9 +29,15 @@ type PaymentSession = {
   expiryTime: DateTime
 }
 
+type Visit = {
+  timeOfStay: Duration
+  entryTime: DateTime
+  latestPaymentTime: DateTime | null
+}
+
 type StartPaymentResult = {
   paymentSession: PaymentSession
-  visitTimeOfStay: Duration
+  visit: Visit
 }
 
 async function makeStartPaymentRequest(ticketCode: string) {
@@ -85,9 +97,13 @@ function processStartPaymentResult(
   const processedExpiryTime = DateTime.fromISOString(
     unprocessedResult.paymentSession.expiryTime
   )
-  const processedVisitTimeOfStay = Duration.fromISO_8601String(
-    unprocessedResult.visitTimeOfStay
-  )
+  const processedVisit: Visit = {
+    timeOfStay: Duration.fromISO_8601String(unprocessedResult.visit.timeOfStay),
+    entryTime: DateTime.fromISOString(unprocessedResult.visit.entryTime),
+    latestPaymentTime: unprocessedResult.visit.latestPaymentTime
+      ? DateTime.fromISOString(unprocessedResult.visit.latestPaymentTime)
+      : null,
+  }
 
   return {
     ...unprocessedResult,
@@ -95,7 +111,7 @@ function processStartPaymentResult(
       ...unprocessedResult.paymentSession,
       expiryTime: processedExpiryTime,
     },
-    visitTimeOfStay: processedVisitTimeOfStay,
+    visit: processedVisit,
   }
 }
 
