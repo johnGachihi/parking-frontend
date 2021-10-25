@@ -133,10 +133,12 @@ function CashierPage() {
             }}
           >
             <div>
-              <Typography variant="body1">Entry Time:</Typography>
+              <Typography variant="body1">Entry time:</Typography>
               <Typography variant="h5" color="secondary">
                 {/*5:20 AM*/}
-                --
+                {startPaymentQuery.data && paymentSessionInProgress
+                  ? startPaymentQuery.data.visit.entryTime.format("h:mm A")
+                  : "--"}
               </Typography>
             </div>
             <div>
@@ -144,9 +146,21 @@ function CashierPage() {
               <Typography variant="h5" color="secondary">
                 {/*5 hrs 32 min*/}
                 {startPaymentQuery.data && paymentSessionInProgress
-                  ? startPaymentQuery.data.visitTimeOfStay.format(
+                  ? startPaymentQuery.data.visit.timeOfStay.format(
                       "H [hrs] m [min]"
                     )
+                  : "--"}
+              </Typography>
+            </div>
+            <div>
+              <Typography variant="body1">Latest payment time:</Typography>
+              <Typography variant="h5" color="secondary">
+                {startPaymentQuery.data && paymentSessionInProgress
+                  ? startPaymentQuery.data.visit.latestPaymentTime
+                    ? startPaymentQuery.data.visit.latestPaymentTime.format(
+                        "h:mm A"
+                      )
+                    : "N/A"
                   : "--"}
               </Typography>
             </div>
