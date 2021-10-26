@@ -7,9 +7,7 @@ import {
 import { useMutation } from "react-query"
 
 async function makeHttpCompletePaymentRequest(paymentSessionId: number) {
-  await client.put("/payment/complete-payment", {
-    paymentSessionId: paymentSessionId,
-  })
+  await client.put("/payment/complete-payment", { paymentSessionId })
 }
 
 function handleHttpError(e: AxiosError<any>) {
@@ -34,7 +32,7 @@ async function completePayment(paymentSessionId: number) {
 
 function useCompletePayment() {
   return useMutation<unknown, null | Error | ErrorResponse, number>(
-    (paymentSessionId: number) => completePayment(paymentSessionId)
+    paymentSessionId => completePayment(paymentSessionId)
   )
 }
 
