@@ -1,7 +1,6 @@
 import PageTemplate from "../components/page-template/page-template"
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
-import Button from "@mui/material/Button"
 import Divider from "@mui/material/Divider"
 import Typography from "@mui/material/Typography"
 import Snackbar from "@mui/material/Snackbar"
@@ -17,6 +16,7 @@ import LoadingButton from "../components/payment-page/loading-button"
 import UnexpectedErrorDialog from "../components/payment-page/unexpected-error-dialog"
 import { useTimeUntilPaymentSessionExpiry } from "../components/payment-page/use-time-until-payment-session-expiry"
 import PaymentSessionExpiredDialog from "../components/payment-page/payment-session-expired-dialog"
+import useCancelPayment from "../network/cancel-payment"
 
 function CashierPage() {
   const [ticketCodeInput, setTicketCodeInput] = useState<string>("")
@@ -30,6 +30,8 @@ function CashierPage() {
     startPaymentQuery.error
   )
   const completePaymentQuery = useCompletePayment()
+
+  const cancelPaymentQuery = useCancelPayment()
 
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false)
@@ -65,6 +67,12 @@ function CashierPage() {
       setIsErrorDialogOpen(true)
     }
   }, [completePaymentQuery.isError])
+
+  useEffect(() => {
+    if (cancelPaymentQuery.isSuccess) {
+      setPaymentSessionInProgress(false)
+    }
+  }, [cancelPaymentQuery.isSuccess])
 
   const isPaymentSessionExpired = useMemo(() => {
     return !!(
@@ -180,7 +188,7 @@ function CashierPage() {
               <LoadingButton
                 variant="contained"
                 sx={{ mr: 4 }}
-                disabled={!paymentSessionInProgress}
+                disabled={!paymentSessionInProgress || cancelPaymentQuery.isLoading}
                 onClick={() => {
                   if (startPaymentQuery.isSuccess && startPaymentQuery.data) {
                     completePaymentQuery.mutate(
@@ -192,15 +200,22 @@ function CashierPage() {
               >
                 Complete Payment
               </LoadingButton>
-              <Button
+              <LoadingButton
                 variant="outlined"
                 disabled={
                   !paymentSessionInProgress || completePaymentQuery.isLoading
                 }
-                onClick={() => setPaymentSessionInProgress(false)}
+                onClick={() => {
+                  if (startPaymentQuery.isSuccess && startPaymentQuery.data) {
+                    cancelPaymentQuery.mutate(
+                      startPaymentQuery.data.paymentSession.id
+                    )
+                  }
+                }}
+                loading={cancelPaymentQuery.isLoading}
               >
                 Cancel Payment
-              </Button>
+              </LoadingButton>
             </Box>
             <Typography variant="body2" sx={{ mt: 2 }}>
               Time left until payment session expires:{" "}
